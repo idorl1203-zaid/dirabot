@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.pyo
+scraper/__pycache__/
+dirabot.db
+dirabot.db-*
+logs/
+.env
+.fb_profile/
+.git/
+.venv/
+venv/
+node_modules/
+_probe*

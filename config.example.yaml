@@ -1,0 +1,54 @@
+# Copy to config.yaml and edit: cp config.example.yaml config.yaml
+profiles:
+- name: דוגמה — תל אביב
+  enabled: true
+  locations:
+  - תל אביב
+  price:
+    min: 3500
+    max: 5500
+  rooms:
+    min: 2.5
+    max: 3.5
+  floor_min: 0
+  require_elevator: false
+  require_parking: false
+  require_balcony: false
+  require_mamad: false
+  require_pets: false
+  blacklist_keywords:
+  - סאבלט
+  - השכרת משנה
+  - נופש
+  - דמי מפתח
+  - יחידת דיור
+  - מרתף
+  - פרטר
+  - סטודיו
+  - שותף
+  - שותפה
+  bonus_keywords:
+  - משופצת
+  - חדשה
+  require_renovated: true
+sources:
+  yad2: true
+  madlan: true
+  facebook: false
+scan:
+  interval_hours: 2.5
+  max_listings_per_source: 60
+  listing_ttl_days: 60
+  fb_scroll_count: 5
+  fb_max_groups: 8
+notifications:
+  telegram_chat_id: ''
+  min_score_to_notify: 70
+  send_daily_summary: true
+  daily_summary_hour: 9
+scoring:
+  price_weight: 30
+  location_weight: 25
+  rooms_weight: 20
+  features_weight: 15
+  keywords_weight: 10

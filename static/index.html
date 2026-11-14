@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DiraBot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="noise"></div>
+
+  <div class="app">
+
+    <!-- ══ SIDEBAR ══ -->
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <div class="brand">
+          <div class="brand-icon">🏠</div>
+          <div class="brand-text">
+            <span class="brand-name">DiraBot</span>
+            <span class="brand-sub">סוכן חיפוש דירות</span>
+          </div>
+        </div>
+        <div class="conn-pill" id="connPill">
+          <span class="conn-dot"></span>
+          <span class="conn-label">מחובר</span>
+        </div>
+      </div>
+
+      <!-- Stats row -->
+      <div class="stats-row">
+        <div class="stat">
+          <span class="stat-num" id="statToday">—</span>
+          <span class="stat-lbl">היום</span>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat">
+          <span class="stat-num" id="statNotified">—</span>
+          <span class="stat-lbl">נשלחו</span>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat accent">
+          <span class="stat-num" id="statTotal">—</span>
+          <span class="stat-lbl">סה"כ</span>
+        </div>
+      </div>
+
+      <!-- Scan -->
+      <button class="btn-scan" id="scanBtn" onclick="triggerScan()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span id="scanLabel">סרוק דירות חדשות</span>
+      </button>
+
+      <!-- Top listings -->
+      <div class="side-section">
+        <p class="side-label">הכי מתאימות</p>
+        <div id="topList"></div>
+      </div>
+
+      <!-- Log -->
+      <div class="side-section grow">
+        <p class="side-label">לוג חי</p>
+        <div class="log-box" id="logBox"></div>
+      </div>
+    </aside>
+
+    <!-- ══ MAIN ══ -->
+    <div class="main">
+
+      <!-- Tab bar -->
+      <div class="tabbar">
+        <button class="tabitem active" id="tab-chat"     onclick="switchTab('chat')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          שיחה
+        </button>
+        <button class="tabitem" id="tab-listings" onclick="switchTab('listings')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          דירות
+          <span class="tab-badge" id="listingsBadge"></span>
+        </button>
+        <button class="tabitem" id="tab-profiles" onclick="switchTab('profiles')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+          פרופילי חיפוש
+        </button>
+      </div>
+
+      <!-- ── CHAT ── -->
+      <div class="panel active" id="panel-chat">
+        <div class="chat-wrap">
+          <div class="chat-messages" id="chatMessages">
+            <div class="msg agent">
+              <div class="msg-av">🤖</div>
+              <div class="msg-body">
+                <p>שלום! אני DiraBot — הסוכן שמחפש עבורך ובת הזוג שלך את הדירה המושלמת 🏠</p>
+                <p>אני סורק יד2 ומדלן כל כמה שעות ושולח לכם התראות ב-Telegram.</p>
+                <p>שאל אותי כל דבר — על הדירות שנמצאו, על הקריטריונים, על הסטטיסטיקות 😊</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="typing-wrap" id="typingWrap">
+            <div class="msg-av">🤖</div>
+            <div class="typing-bubble">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+
+          <div class="chat-foot">
+            <div class="chat-row">
+              <textarea id="chatInput" class="chat-inp" placeholder="שאל את הסוכן..." rows="1"
+                onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+              <button class="send-btn" id="sendBtn" onclick="sendChat()">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+            <div class="quick-chips">
+              <button onclick="quickSend('כמה דירות נמצאו עד כה?')">כמה דירות?</button>
+              <button onclick="quickSend('מה הדירות הכי מתאימות לנו?')">הכי מתאימות</button>
+              <button onclick="quickSend('מה הממוצע מחירים של מה שנמצא?')">ממוצע מחירים</button>
+              <button onclick="quickSend('מה מצב הסריקה?')">מצב הסריקה</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── LISTINGS ── -->
+      <div class="panel" id="panel-listings">
+        <div class="listings-head">
+          <div class="filter-bar">
+            <label class="filter-lbl">ציון מינימום</label>
+            <div class="slider-wrap">
+              <input type="range" id="scoreSlider" min="0" max="100" value="0"
+                oninput="scoreVal.textContent=this.value; loadListings()" />
+              <span id="scoreVal">0</span>
+            </div>
+          </div>
+          <span class="count-lbl" id="listingsCount"></span>
+        </div>
+        <div class="listings-grid" id="listingsGrid">
+          <div class="empty-state">טוען דירות...</div>
+        </div>
+      </div>
+
+      <!-- ── PROFILES ── -->
+      <div class="panel" id="panel-profiles">
+        <div class="profiles-head">
+          <h2 class="profiles-title">פרופילי חיפוש</h2>
+          <p class="profiles-sub">כל פרופיל סורק במקביל — הפעל/כבה כרצונך</p>
+          <button class="btn-add-profile" onclick="addProfile()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            פרופיל חדש
+          </button>
+        </div>
+        <div class="profiles-list" id="profilesList"></div>
+
+        <!-- Sources -->
+        <div class="sources-card">
+          <h3 class="sources-title">מקורות חיפוש</h3>
+          <div class="sources-row">
+            <label class="source-toggle" id="srcYad2Label">
+              <span class="source-name">🟡 יד2</span>
+              <input type="checkbox" id="srcYad2" onchange="saveSource('yad2', this.checked)" />
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </label>
+            <label class="source-toggle" id="srcMadlanLabel">
+              <span class="source-name">🔵 מדלן</span>
+              <input type="checkbox" id="srcMadlan" onchange="saveSource('madlan', this.checked)" />
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </label>
+            <label class="source-toggle" id="srcHomelessLabel">
+              <span class="source-name">🔴 הומלס</span>
+              <input type="checkbox" id="srcHomeless" onchange="saveSource('homeless', this.checked)" />
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </label>
+            <label class="source-toggle" id="srcKomoLabel">
+              <span class="source-name">🟢 קומו</span>
+              <input type="checkbox" id="srcKomo" onchange="saveSource('komo', this.checked)" />
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /main -->
+  </div><!-- /app -->
+
+  <!-- Toast -->
+  <div class="toasts" id="toasts"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
