@@ -1,109 +1,55 @@
-# 🏠 DiraBot — סוכן חיפוש דירות
+# DiraBot
 
-סוכן Python אוטונומי שסורק יד2 ומדלן, מסנן לפי הקריטריונים שלך, ושולח התראות ל-Telegram — ללא כפילויות.
+**Your next apartment finds you.**
 
----
+An agent that scans Israeli rental listings every few hours, scores each apartment against your criteria and sends only the ones worth seeing to Telegram.
 
-## ⚡ התקנה מהירה
+<img src="docs/dirabot-1.webp" alt="DiraBot screenshot" width="100%">
 
-### שלב 1 — התקן תלויות
+## Highlights
+
+- Stealth Playwright that passes bot protection and reads the site’s internal API
+- 0–100 scoring on price, location, rooms, features and keywords, with a notify threshold
+- Multiple search profiles, hard filters and junk-listing blocking
+- Live dashboard with an agent chat, and duplicate-free alerts
+
+## Tech stack
+
+Python · Playwright · FastAPI · WebSocket · SQLite · Gemini · Telegram Bot
+
+## Run locally
+
+Full Hebrew setup guide (Telegram bot, profiles): [docs/SETUP-he.md](docs/SETUP-he.md)
+
+
 ```bash
-cd ~/Desktop/DiraBot
-pip install -r requirements.txt
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt && playwright install chromium
+cp .env.example .env && cp config.example.yaml config.yaml
+python -m uvicorn server:app --port 6008
 ```
 
-### שלב 2 — הגדר מפתחות API
-```bash
-cp .env.example .env
-# ערוך את .env והכנס את המפתחות
-```
+Dashboard at http://localhost:6008 · see DEPLOY.md for Docker/Railway
 
-**Gemini API Key** (חינם):
-👉 https://aistudio.google.com/app/api-keys
-
-**Telegram Bot Token**:
-1. פתח Telegram ועבור ל-@BotFather
-2. שלח `/newbot`
-3. בחר שם לבוט
-4. קבל את ה-TOKEN
-5. שלח `/start` לבוט שלך
-6. עבור ל: `https://api.telegram.org/bot<TOKEN>/getUpdates`
-7. העתק את ה-`chat_id` ל-`config.yaml` תחת `notifications.telegram_chat_id`
-
-### שלב 3 — הגדר פרופיל (אינטראקטיבי!)
-```bash
-python agent.py --setup
-```
-הסוכן ישאל אתכם שאלות ויבנה את הקריטריונים אוטומטית ב-`config.yaml`.
-
-### שלב 4 — הרץ!
-```bash
-python agent.py
-```
+> All secrets live in environment variables — see `.env.example`. No keys are committed to this repository.
 
 ---
 
-## 📋 פקודות
+<div dir="rtl">
 
-| פקודה | מה עושה |
-|---|---|
-| `python agent.py` | הרצה מלאה עם טריגרים תקופתיים |
-| `python agent.py --setup` | שיחת הגדרת פרופיל |
-| `python agent.py --scan-now` | סריקה חד-פעמית מיידית |
+## בעברית
 
----
+**הדירה הבאה מגיעה אליך.**
 
-## ⚙️ שינוי קריטריונים
+סוכן שסורק מודעות שכירות ביד2 כל כמה שעות, מדרג כל דירה לפי הקריטריונים שלך ושולח לטלגרם רק את מה ששווה לראות.
 
-העתק את `config.example.yaml` ל-`config.yaml` וערוך אותו — שינויים נכנסים לתוקף בסריקה הבאה, **ללא הפעלה מחדש!**
+- Playwright עם stealth שעובר את ההגנות של האתר ומושך נתונים מה-API הפנימי
+- ציון 0–100 לפי מחיר, מיקום, חדרים, מאפיינים ומילות מפתח, עם סף התראה
+- פרופילי חיפוש מרובים, מסנני חובה וחסימת ״דירות זבל״
+- דשבורד חי עם צ׳אט לסוכן, והתראות ללא כפילויות
 
-```yaml
-search:
-  locations:
-    - "תל אביב יפו"
-    - "הרצליה"
-  price:
-    min: 4000
-    max: 8000
-  rooms:
-    min: 2
-    max: 3.5
-```
+</div>
 
 ---
 
-## 📁 מבנה הפרויקט
-
-```
-DiraBot/
-├── agent.py              # הסוכן הראשי
-├── config.yaml           # ← שנה כאן!
-├── db.py                 # SQLite + deduplication
-├── telegram_notifier.py  # שליחת הודעות
-├── profile_builder.py    # הגדרת פרופיל
-├── scraper/
-│   ├── yad2.py           # יד2
-│   ├── madlan.py         # מדלן
-│   └── base.py           # לוגיקת ניקוד
-├── .env                  # מפתחות (לא עולה ל-git!)
-└── dirabot.db            # נוצר אוטומטית
-```
-
----
-
-## 📱 דוגמת הודעת Telegram
-
-```
-🏠 דירה חדשה נמצאה! ⭐⭐⭐
-🟡 Yad2   •   📊 ציון: 87/100
-
-📍 תל אביב, רמת אביב
-🛏 3 חדרים  •  קומה 4
-💰 6,200 ₪/חודש
-📐 75 מ"ר
-🌿 מרפסת  •  🛗 מעלית
-
-📝 דירה מרווחת, שמשה, שיפוץ מלא...
-
-🔗 לצפייה במודעה
-```
+Part of my portfolio · built by [Ido](https://github.com/idorl1203-zaid)
