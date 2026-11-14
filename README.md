@@ -52,4 +52,4 @@ Dashboard at http://localhost:6008 · see DEPLOY.md for Docker/Railway
 
 ---
 
-Part of my portfolio · built by [Ido](https://github.com/idorl1203-zaid)
+Part of my portfolio · built by [Ido Rafael](https://github.com/idorl1203-zaid)
